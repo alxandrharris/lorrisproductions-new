@@ -78,7 +78,7 @@
             z-index: 30;
             display: flex;
             flex-direction: column;
-            gap: 1.25rem;
+            gap: 1.5rem;
             transition: opacity 0.6s ease, transform 0.6s ease;
         }
 
@@ -192,6 +192,13 @@
 
         .external-link:hover { opacity: 0.7; }
 
+        /* Desktop Title Size Increase */
+        @media (min-width: 1025px) {
+            .shimmer-text {
+                font-size: 1.75rem;
+            }
+        }
+
         /* Mobile Overrides */
         @media (max-width: 1024px) {
             .header-wrap {
@@ -270,17 +277,17 @@
     <div id="synopsis-container" class="view-container">
         <div class="text-[10px] uppercase tracking-[0.4em] text-[#c5a059] mb-4 font-medium">In Development</div>
         <h3 id="syn-tagline" class="text-xl md:text-2xl font-light leading-relaxed text-stone-100 serif italic mb-6"></h3>
-        <p id="syn-details" class="text-sm md:text-base font-light leading-relaxed text-stone-300"></p>
+        <div id="syn-details" class="text-sm md:text-base font-light leading-relaxed text-stone-300"></div>
         <div id="syn-link-wrapper"></div>
     </div>
 
     <div id="about-container" class="view-container">
         <div class="text-[10px] uppercase tracking-[0.4em] text-[#c5a059] mb-4 font-medium">Our Company</div>
         <h3 class="text-xl md:text-2xl font-light leading-relaxed text-stone-100 serif italic mb-6">
-            Crafting elevated narratives that bridge historical legacy with contemporary resonance.
+            Storytelling, beyond borders...
         </h3>
         <p class="text-sm md:text-base font-light leading-relaxed text-stone-300 max-w-lg mx-auto">
-            Lorris Productions is an independent production company dedicated to the development of cinematic stories that demand a nuanced lens. We focus on untold histories and character-driven dramas, collaborating with global talent to bring sophisticated, culturally significant projects to life for a modern audience.
+            <strong><em>Lorris Productions</em></strong> is an independent production company dedicated to the development of unique cinematic stories that bridge cultures. We focus on untold stories, collaborating with global talent to bring sophisticated, culturally significant projects to life for a modern audience.
         </p>
     </div>
 
@@ -294,30 +301,24 @@
                 title: "Madame Sadayakko",
                 image: "sadayakko-bg.jpg",
                 tagline: "The geisha who seduced the West and became Japan’s first global superstar.",
-                details: "Set against the backdrop of the 1900 Paris World’s Fair, this production explores the life of the woman who defined 'Japonisme' for the European avant-garde. From the tea houses of Tokyo to the grand stages of London and Paris, it is a story of radical reinvention and the cost of becoming an icon.",
+                details: "<strong><em>Madame Sadayakko</em></strong> is a prestige drama depicting the extraordinary true story of a young girl sold into a geisha house at the dawn of the Meiji Restoration, following the end of the shogunate. Supported by the powerful patronage of Prime Minister Ito Hirobumi, she rises to prominence in Tokyo’s exclusive \"flower and willow world\" before marrying the ambitious playwright Otojiro Kawakami. Together they tour the West, where she defies centuries of tradition to become Japan’s first actress and its first global superstar. Anchoring her odyssey across continents is an enduring yet forbidden connection that bookends her life and survives an era of total transformation. This is the story of a trailblazer who used her inner strength to carve out her own destiny in a rapidly changing world.",
                 link: "https://madamesadayakko.com"
             },
             {
                 title: "Great Aunt Tiger",
                 image: "tiger-bg.jpg",
-                tagline: "A cross-generational odyssey of family and memory.",
-                details: "When an estranged grandson returns to his ancestral village in the mountains of Taiwan, he discovers a series of hidden letters belonging to his Great Aunt. As he translates them, he uncovers a saga of forbidden love and survival during the tumultuous decades of the early 20th century."
+                tagline: "An ancient legend becomes a terrifying reality when a family’s journey to their ancestral home awakens a predatory spirit that has been waiting decades for its revenge.",
+                details: "<strong><em>Great Aunt Tiger</em></strong> is a supernatural thriller that weaves together a woman’s haunted past in rural Taiwan and her family’s modern-day life in the United States. When seventy-year-old Aimei reluctantly returns to her childhood village with her son, daughter-in-law and grandchildren to honor their ancestors, she is forced to confront a dark secret she has spent a lifetime trying to bury. The family realizes that some folklore is more than just a story used to frighten children."
             },
             {
                 title: "Tom’s English School",
-                image: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&q=80&w=2000",
-                tagline: "Lessons in linguistics and the things that are never translated.",
-                details: "A dry, character-driven drama centered on an American expat who finds himself the unlikely custodian of a small-town language school. In the quiet intersections of suburban life, he discovers that language is often the smallest barrier to actually being understood."
-            },
-            {
-                title: "Princess Wasabi",
-                image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=2000",
-                tagline: "A whimsical exploration of pop royalty and ancestral legacy.",
-                details: "In a world where culinary mastery is the ultimate form of power, a young girl must reclaim her family's spicy heritage to save her neon-drenched city from a flavorless corporate takeover. A vibrant, high-concept animation exploring identity and tradition."
+                image: "tom-bg.jpg",
+                tagline: "Something unusual in the heart of Tokyo...",
+                details: "<strong><em>Tom’s English School</em></strong> follows a Japanese wife and American husband who operate a nondescript English school in a covered shopping arcade where the lives of four people are changed for the better in unexpected ways in the lead-up to Christmas."
             }
         ];
 
-        const HOME_IMAGE = "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&q=80&w=2000";
+        const HOME_IMAGE = "bg.jpg";
         let activeIndex = -1;
         let isTransitioning = false;
 
@@ -326,19 +327,16 @@
             const front = document.getElementById('bg-front');
             const back = document.getElementById('bg-back');
 
-            // 1. Set the back layer to the new image
             back.style.backgroundImage = `url('${newImageUrl}')`;
             
-            // 2. Fade out the current front image
             isTransitioning = true;
             front.style.opacity = '0';
 
-            // 3. After transition finishes, swap them
             setTimeout(() => {
                 front.style.backgroundImage = `url('${newImageUrl}')`;
                 front.style.opacity = '1';
                 isTransitioning = false;
-            }, 1500); // Matches the 1.5s CSS transition
+            }, 1500);
         }
 
         function showView(view, index = -1) {
@@ -374,7 +372,7 @@
                 updateBackground(project.image);
 
                 document.getElementById('syn-tagline').textContent = project.tagline;
-                document.getElementById('syn-details').textContent = project.details;
+                document.getElementById('syn-details').innerHTML = project.details;
                 
                 const linkWrapper = document.getElementById('syn-link-wrapper');
                 linkWrapper.innerHTML = '';
@@ -394,14 +392,13 @@
             const nav = document.getElementById('project-nav');
             document.getElementById('year').textContent = new Date().getFullYear();
             
-            // Initial setup
             document.getElementById('bg-front').style.backgroundImage = `url('${HOME_IMAGE}')`;
             document.getElementById('bg-back').style.backgroundImage = `url('${HOME_IMAGE}')`;
 
             PROJECTS.forEach((project, index) => {
                 const item = document.createElement('div');
                 item.className = 'title-item cursor-pointer group';
-                item.innerHTML = `<h2 class="shimmer-text text-lg md:text-xl serif tracking-wider">${project.title}</h2>`;
+                item.innerHTML = `<h2 class="shimmer-text serif tracking-wider">${project.title}</h2>`;
 
                 item.addEventListener('click', () => {
                     if (activeIndex === index) showView('home');
