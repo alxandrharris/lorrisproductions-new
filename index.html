@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lorris Productions</title>
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --obsidian: #0a0a0a;
+            --parchment: #f4f1ea;
+            --gold: #c5a059;
+        }
+
+        body, html {
+            background-color: var(--obsidian);
+            color: var(--parchment);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Prevent scroll on desktop, allow on mobile */
+        @media (min-width: 1025px) {
+            body, html { overflow: hidden; }
+        }
+
+        h1, h2, h3, .serif {
+            font-family: 'Libre Baskerville', serif;
+        }
+
+        /* Crossfade Background System */
+        .bg-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+            filter: brightness(0.35) contrast(1.1);
+        }
+
+        #bg-front {
+            z-index: 1;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        #bg-back {
+            z-index: 0;
+        }
+
+        #bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%),
+                        linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.4) 100%);
+            z-index: 2;
+        }
+
+        /* Nav List Positioning */
+        .nav-list {
+            position: fixed;
+            bottom: 80px;
+            left: 40px;
+            z-index: 30;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        /* Gold Shimmer Effect */
+        .shimmer-text {
+            color: var(--gold);
+            background: linear-gradient(90deg, #c5a059 0%, #fff4d1 50%, #c5a059 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0.5;
+        }
+
+        .title-item:hover .shimmer-text, .title-item.active .shimmer-text {
+            opacity: 1;
+            -webkit-text-fill-color: var(--gold);
+        }
+
+        .title-item.active .shimmer-text {
+            transform: translateX(10px);
+            font-style: italic;
+        }
+
+        .title-item:hover .shimmer-text {
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        /* Content Containers */
+        .view-container {
+            position: fixed;
+            z-index: 20;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .view-container.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: none;
+        }
+
+        #synopsis-container {
+            right: 8%;
+            top: 50%;
+            transform: translateY(-45%);
+            width: 35%;
+            max-width: 450px;
+        }
+
+        #about-container {
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -45%);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        /* Header Utility */
+        .header-wrap {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            z-index: 40;
+        }
+
+        .brand-header { cursor: pointer; }
+
+        .top-right-nav {
+            display: flex;
+            gap: 2rem;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-top: 8px;
+        }
+
+        .footer-legal {
+            position: fixed;
+            bottom: 30px;
+            left: 40px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(244, 241, 234, 0.4);
+            z-index: 30;
+        }
+
+        .external-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            color: var(--gold);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            border-bottom: 1px solid var(--gold);
+            padding-bottom: 2px;
+            transition: opacity 0.3s ease;
+        }
+
+        .external-link:hover { opacity: 0.7; }
+
+        /* Mobile Overrides */
+        @media (max-width: 1024px) {
+            .header-wrap {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 0.75rem;
+                background: linear-gradient(to bottom, var(--obsidian) 70%, transparent 100%);
+                padding: 30px 20px;
+            }
+            .top-right-nav { 
+                margin-top: 0; 
+                gap: 1.5rem;
+            }
+            
+            .nav-list {
+                position: relative;
+                bottom: auto;
+                left: auto;
+                margin-top: 140px;
+                padding: 0 20px;
+                width: 100%;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            
+            .view-container {
+                position: relative;
+                top: auto !important;
+                left: auto !important;
+                right: auto !important;
+                transform: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 40px 20px;
+                margin-bottom: 60px;
+                scroll-margin-top: 160px;
+            }
+
+            .title-item.active .shimmer-text {
+                transform: none;
+            }
+
+            .footer-legal {
+                position: relative;
+                bottom: auto;
+                left: auto;
+                text-align: center;
+                padding-bottom: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Crossfade Background Layers -->
+    <div id="bg-back" class="bg-layer"></div>
+    <div id="bg-front" class="bg-layer"></div>
+    <div id="bg-overlay"></div>
+
+    <div class="header-wrap" id="main-header">
+        <div class="brand-header" onclick="showView('home')">
+            <h1 class="text-2xl serif tracking-tight">Lorris Productions</h1>
+        </div>
+
+        <div class="top-right-nav">
+            <a href="javascript:void(0)" onclick="showView('about')" class="hover:text-[#c5a059] transition-colors">About</a>
+            <a href="mailto:contact@lorrisproductions.com" class="hover:text-[#c5a059] transition-colors">Contact</a>
+        </div>
+    </div>
+
+    <div class="nav-list" id="project-nav">
+        <!-- Projects injected here -->
+    </div>
+
+    <div id="synopsis-container" class="view-container">
+        <div class="text-[10px] uppercase tracking-[0.4em] text-[#c5a059] mb-4 font-medium">In Development</div>
+        <h3 id="syn-tagline" class="text-xl md:text-2xl font-light leading-relaxed text-stone-100 serif italic mb-6"></h3>
+        <p id="syn-details" class="text-sm md:text-base font-light leading-relaxed text-stone-300"></p>
+        <div id="syn-link-wrapper"></div>
+    </div>
+
+    <div id="about-container" class="view-container">
+        <div class="text-[10px] uppercase tracking-[0.4em] text-[#c5a059] mb-4 font-medium">Our Company</div>
+        <h3 class="text-xl md:text-2xl font-light leading-relaxed text-stone-100 serif italic mb-6">
+            Crafting elevated narratives that bridge historical legacy with contemporary resonance.
+        </h3>
+        <p class="text-sm md:text-base font-light leading-relaxed text-stone-300 max-w-lg mx-auto">
+            Lorris Productions is an independent production company dedicated to the development of cinematic stories that demand a nuanced lens. We focus on untold histories and character-driven dramas, collaborating with global talent to bring sophisticated, culturally significant projects to life for a modern audience.
+        </p>
+    </div>
+
+    <div class="footer-legal">
+        &copy; <span id="year"></span> Lorris Productions LLC
+    </div>
+
+    <script>
+        const PROJECTS = [
+            {
+                title: "Madame Sadayakko",
+                image: "sadayakko-bg.jpg",
+                tagline: "The geisha who seduced the West and became Japan’s first global superstar.",
+                details: "Set against the backdrop of the 1900 Paris World’s Fair, this production explores the life of the woman who defined 'Japonisme' for the European avant-garde. From the tea houses of Tokyo to the grand stages of London and Paris, it is a story of radical reinvention and the cost of becoming an icon.",
+                link: "https://madamesadayakko.com"
+            },
+            {
+                title: "Great Aunt Tiger",
+                image: "tiger-bg.jpg",
+                tagline: "A cross-generational odyssey of family and memory.",
+                details: "When an estranged grandson returns to his ancestral village in the mountains of Taiwan, he discovers a series of hidden letters belonging to his Great Aunt. As he translates them, he uncovers a saga of forbidden love and survival during the tumultuous decades of the early 20th century."
+            },
+            {
+                title: "Tom’s English School",
+                image: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&q=80&w=2000",
+                tagline: "Lessons in linguistics and the things that are never translated.",
+                details: "A dry, character-driven drama centered on an American expat who finds himself the unlikely custodian of a small-town language school. In the quiet intersections of suburban life, he discovers that language is often the smallest barrier to actually being understood."
+            },
+            {
+                title: "Princess Wasabi",
+                image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=2000",
+                tagline: "A whimsical exploration of pop royalty and ancestral legacy.",
+                details: "In a world where culinary mastery is the ultimate form of power, a young girl must reclaim her family's spicy heritage to save her neon-drenched city from a flavorless corporate takeover. A vibrant, high-concept animation exploring identity and tradition."
+            }
+        ];
+
+        const HOME_IMAGE = "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&q=80&w=2000";
+        let activeIndex = -1;
+        let isTransitioning = false;
+
+        function updateBackground(newImageUrl) {
+            if (isTransitioning) return;
+            const front = document.getElementById('bg-front');
+            const back = document.getElementById('bg-back');
+
+            // 1. Set the back layer to the new image
+            back.style.backgroundImage = `url('${newImageUrl}')`;
+            
+            // 2. Fade out the current front image
+            isTransitioning = true;
+            front.style.opacity = '0';
+
+            // 3. After transition finishes, swap them
+            setTimeout(() => {
+                front.style.backgroundImage = `url('${newImageUrl}')`;
+                front.style.opacity = '1';
+                isTransitioning = false;
+            }, 1500); // Matches the 1.5s CSS transition
+        }
+
+        function showView(view, index = -1) {
+            const synContainer = document.getElementById('synopsis-container');
+            const aboutContainer = document.getElementById('about-container');
+            const navList = document.getElementById('project-nav');
+            const titles = document.querySelectorAll('.title-item');
+
+            synContainer.classList.remove('visible');
+            aboutContainer.classList.remove('visible');
+            navList.style.opacity = "1";
+            navList.style.pointerEvents = "auto";
+            titles.forEach(t => t.classList.remove('active'));
+
+            if (view === 'home') {
+                activeIndex = -1;
+                updateBackground(HOME_IMAGE);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } 
+            else if (view === 'about') {
+                activeIndex = -1;
+                navList.style.opacity = window.innerWidth > 1024 ? "0.1" : "0";
+                navList.style.pointerEvents = window.innerWidth > 1024 ? "none" : "auto";
+                aboutContainer.classList.add('visible');
+                updateBackground(HOME_IMAGE);
+                if(window.innerWidth <= 1024) aboutContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            else if (view === 'project') {
+                activeIndex = index;
+                const project = PROJECTS[index];
+                titles[index].classList.add('active');
+
+                updateBackground(project.image);
+
+                document.getElementById('syn-tagline').textContent = project.tagline;
+                document.getElementById('syn-details').textContent = project.details;
+                
+                const linkWrapper = document.getElementById('syn-link-wrapper');
+                linkWrapper.innerHTML = '';
+                if (project.link) {
+                    const domain = new URL(project.link).hostname;
+                    linkWrapper.innerHTML = `<a href="${project.link}" target="_blank" class="external-link">${domain}</a>`;
+                }
+
+                setTimeout(() => {
+                    synContainer.classList.add('visible');
+                    if(window.innerWidth <= 1024) synContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 50);
+            }
+        }
+
+        function init() {
+            const nav = document.getElementById('project-nav');
+            document.getElementById('year').textContent = new Date().getFullYear();
+            
+            // Initial setup
+            document.getElementById('bg-front').style.backgroundImage = `url('${HOME_IMAGE}')`;
+            document.getElementById('bg-back').style.backgroundImage = `url('${HOME_IMAGE}')`;
+
+            PROJECTS.forEach((project, index) => {
+                const item = document.createElement('div');
+                item.className = 'title-item cursor-pointer group';
+                item.innerHTML = `<h2 class="shimmer-text text-lg md:text-xl serif tracking-wider">${project.title}</h2>`;
+
+                item.addEventListener('click', () => {
+                    if (activeIndex === index) showView('home');
+                    else showView('project', index);
+                });
+
+                nav.appendChild(item);
+            });
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
